@@ -15,7 +15,6 @@ async function batch_job(rows) {
                     await updateData(row.slice(1));
                     break;
                 case "DELETED":
-                    console.log(row.slice(1));
                     await deleteData(row.slice(1));
                     break;
                 default:

@@ -87,8 +87,20 @@ app.get("/filter/height_limit", async (req, res) => {
     
 });
 
+// Error handling for multer
+const handleUploadError = (err, req, res, next) => {
+    const errorMessage = err.message + ". Please make sure that the key value of the file being sent is 'file'."
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: errorMessage });
+    }
+    if (err) {
+        return res.status(400).json({ error: errorMessage });
+    }
+    next();
+};
+
 // Expects a delta file in the format provided in the README
-app.post("/batch_job", upload.single('file'), async (req, res) => {
+app.post("/batch_job", upload.single('file'), handleUploadError, async (req, res) => {
     const file = req.file;
     if (!file) {
         res.status(400).send("No file uploaded");
@@ -98,9 +110,7 @@ app.post("/batch_job", upload.single('file'), async (req, res) => {
     const { mimetype, path } = file; // Getting the content-type and path of the file
     switch (mimetype) {
         case "text/csv":
-            console.log(path);
-            const rows = parseCSV(path);
-            console.log(rows);
+            const rows = await parseCSV(path);
             await batch_job(rows);
             res.status(200).send("Delta file processed. Batch job completed successfully.");
             break;
