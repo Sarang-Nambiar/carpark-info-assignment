@@ -1,53 +1,53 @@
-# Carpark-Info
-A take-home coding assignment for backend developer interview. 
+# Car-Park-Info
+This is a backend designed to provide information about car parks in Singapore based on whether the following criteria are met:
+- Free parking is available
+- Night parking is available
+- Car park meets the user's vehicle height requirement.
+- Add a user's favourite car park
 
-## Your Task
-1. Given the CSV dataset (hdb-carpark-information-<timestamp>.csv) that contains details of a list of carparks, design the database to store the given information in the dataset and to support the below given user stories. ER diagram should be provided.
-2. Write a batch job that will process and store the information into the database of your choice. This is a daily delta file that will be interfaced over from source. In the event there is an error processing the records in the file, the entire file should rollback.
-3. Write the APIs that will fulfill the below given user stories. Swagger documentation should be provided. No front-end screens are required to be developed - just the APIs. However, you should be prepared to articulate how the APIs are envisoned to be utilised by the front-end developer. :)
+The backend is also able to run a batch job which accepts a CSV delta file interfaced from the source and makes any necessary changes to the database. The format of how the CSV file should look like is given in the data/test-delta.csv file. Essentially, the format doesn't differ much from the original data file, but an extra column is added at the start of the file to indicate the operation to be performed on the data. The operation can be either 'UPDATED' for update, 'DELETED' for delete, or 'INSERTED' for insert.
 
-### User Stories
-* As a user, I want to be able to filter the list of carpark by the following criteria:
-  - Carpark that offer free parking
-  - Carpark that offer night parking
-  - Carpark that can meet my vehicle height requirement.
-* As a user, I want to be able to add a specific carpark as my favourite.
+The database is an in-memory SQLite database that is created and populated with the original hdb-carpark-information-20220824010400.csv data file. 
 
-## Getting Started
-Please review the information in this section before you get started with your development. 
+The following is the ER diagram of the database schema:
+![image](https://github.com/user-attachments/assets/d06de711-a59a-4ebc-9441-cb2a2c50f963)
 
-* Create a personal fork of the project on Github.
-* Clone the fork on your local machine.
-* Implement your solution and the rest of git basics applies.
-* When you are ready, submit the forked repo for review by providing the link to the repo to our recruitment team.
+The original CarPark table is decomposed into the following tables to ensure that the database is in 3NF:
+- CarPark: Contains the main car park information
+- CarPark_Type: Contains the car park type information
+- CarPark_Location: Contains the car park location information
+- CarPark_Policy: Contains the car park policy information
+- CarPark_FreeParking: Contains the car park free parking information
 
-### Tech Stack
-You may choose to develop the application using either of the following stack:
-* Spring Boot / Spring Batch with H2 database and ORM of your choice
-* .NET Core 6.x with SQLite database and ORM of your choice
-* Node.js with an in-memory database of your choice
+## Things to note before running:
+- Make sure to have SQLite installed on your machine. Moreover, configure the database to enable foreign key constraints. This can be done by running the following command in the SQLite shell:
+```sql
+PRAGMA foreign_keys = ON;
+```
+- If you haven't done so already, install the required packages by running the following command in the root directory:
+```bash
+npm install
+```
+- The PORT information is stored inside a .env file. Make sure to create a .env file in the root directory and add the following line:
+```bash
+PORT=8000
+```
 
-Note: You are encouraged to try out .NET Core as Microsoft technologies are primarily used within the firm.
+## How to run
+To run the backend, run the following command in the root directory:
+```bash
+npm start
+```
 
-### Tools
-You are free to choose the IDE (Integrated Development Environment) tool you are most comfortable with.
+The backend will be running on http://localhost:8000
+The Swagger documentation can be accessed at http://localhost:8000/api-docs
 
-## Basic Expectation
-* Ability to design data schema, apply normalisation technique and enhance query performances, if applicable.
-* Write readable, maintainable, performant and well-documented codes.
-* Code design / architecture should support implementation of unit testing.
-* Code design / architecture should be flexible to changes / open to extensions, e.g. changing of data access technology, changing of interface file format from csv to JSON etc.
-* Write clear and concise commit message.
-
-## Challenge Yourself
-Additional consideration to fine-tune your solution. It's not a must to implement in this assignment but please be prepared to discuss:
-* The dataset has the potential to be large in size.
-* Minimal human intervention for job recovery.
-* Secure coding practices
-* API authentication and authorisation
-
-## Time Estimates
-This assignment should take about 2 to 4 hours of your time depending on your level of experiences. 
-
-## Need Help
-Create a github issue. We'll get back to you.
+## How to run the batch job
+To run the batch job, follow the steps below:
+1. Create a CSV file in the format specified in the data/test-delta.csv file.
+2. Start the backend server by running the following command in the root directory:
+```bash
+npm start
+```
+3. Send a POST request to the /batch_job endpoint with the CSV file attached as a form-data. The key should be 'file'.
+4. The batch job will run and make the necessary changes to the database.
