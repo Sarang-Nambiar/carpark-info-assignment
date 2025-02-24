@@ -10,7 +10,7 @@ The backend is also able to run a batch job which accepts a CSV delta file inter
 The database is an in-memory SQLite database that is created and populated with the original hdb-carpark-information-20220824010400.csv data file. 
 
 The following is the ER diagram of the database schema:
-give ER diagram here
+![image](https://github.com/user-attachments/assets/d06de711-a59a-4ebc-9441-cb2a2c50f963)
 
 The original CarPark table is decomposed into the following tables to ensure that the database is in 3NF:
 - CarPark: Contains the main car park information
