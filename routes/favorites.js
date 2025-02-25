@@ -7,7 +7,7 @@ const { getQuery, runQuery } = require('../lib/db');
  * tags:
  *   name: Favorites
  *   description: API to add a car park to favorites
- * /add/favorites:
+ * /add/favorite:
  *   post:
  *     tags: [Favorites]
  *     summary: Add a car park to favorites
