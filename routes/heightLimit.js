@@ -23,7 +23,7 @@ const LIMIT = 100; // Limit on the number of rows returned
  *       - in: query
  *         name: height
  *         schema:
- *           type: integer
+ *           type: number
  *           description: The height of the vehicle.
  *     responses:
  *      200:
@@ -49,7 +49,7 @@ router.get("/", async (req, res) => {
         JOIN CarPark_Location cpl ON cp.locationID = cpl.locationID
         JOIN CarPark_Type cpt ON cp.typeID = cpt.typeID
         JOIN CarPark_Policy cpp ON cp.policyID = cpp.policyID
-        WHERE cp.gantry_height >= ${height} 
+        WHERE cp.gantry_height >= ${height} OR cp.gantry_height = 0
         LIMIT ${LIMIT} OFFSET ${offset}`);
         res.status(200).json(data);
     } catch (err) {
